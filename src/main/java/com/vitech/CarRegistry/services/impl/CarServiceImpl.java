@@ -9,11 +9,13 @@ import com.vitech.CarRegistry.services.CarService;
 import com.vitech.CarRegistry.services.converters.CarConverter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 
 @Service
 @Slf4j
@@ -72,13 +74,15 @@ public class CarServiceImpl implements CarService {
 
 
     @Override
-    public List<Car> getAllCars(){
+    @Async
+    public CompletableFuture<List<Car>> getAllCars(){
         List<CarEntity> carsList = carRepository.findAll();
         List<Car> cars = new ArrayList<>();
         carsList.forEach(car -> {
             cars.add(carConverter.toCar(car));
         } );
-        return cars;
+
+        return  CompletableFuture.completedFuture(cars);
     }
 
 

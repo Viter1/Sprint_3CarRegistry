@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 @RestController
 @Slf4j
@@ -36,21 +37,21 @@ public class CarController {
     }
 
     @GetMapping ("/cars")
-    public ResponseEntity<?> getCars(){
+    public CompletableFuture<?> getCars(){
         log.info("Retriving Car Info - get car");
         log.info(":D");
         try {
-            List<Car> cars = carService.getAllCars();
+            CompletableFuture<List<Car>> cars = carService.getAllCars();
             List< CarResponse> response = new ArrayList<>();
 
-            cars.forEach(car -> {
+            cars.get().forEach(car -> {
 
                 response.add(carMapper.toResponse(car));
                 log.info(":D");
             });
-            return ResponseEntity.ok(response);
+            return CompletableFuture.completedFuture(response);
         } catch (Exception e) {
-            return  ResponseEntity.notFound().build();
+            return  CompletableFuture.completedFuture(ResponseEntity.notFound());
         }
 
     }

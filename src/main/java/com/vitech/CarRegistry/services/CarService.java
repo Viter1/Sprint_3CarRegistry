@@ -4,6 +4,7 @@ import com.vitech.CarRegistry.controller.dtos.CarRequest;
 import com.vitech.CarRegistry.domain.Car;
 
 import java.util.List;
+import java.util.concurrent.CompletableFuture;
 
 public interface CarService {
 
@@ -15,5 +16,5 @@ public interface CarService {
 
     Car saveCar(Car carRequest);
 
-    List<Car> getAllCars();
+    CompletableFuture<List<Car>> getAllCars();
 }
