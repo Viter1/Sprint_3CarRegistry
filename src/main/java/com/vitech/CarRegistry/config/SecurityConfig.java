@@ -49,11 +49,15 @@ public class SecurityConfig {
         http.csrf(AbstractHttpConfigurer::disable)
                 .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authorizeHttpRequests(authorization -> authorization
-                        .requestMatchers(HttpMethod.POST,"/login","/singup").permitAll()
+                        .requestMatchers(HttpMethod.POST,"/login","/signup").permitAll()
+                        .requestMatchers(HttpMethod.GET,"/cars/**").permitAll()
+                        .requestMatchers(HttpMethod.POST, "/cars/**").permitAll()
+                        .requestMatchers(HttpMethod.PUT, "/cars/**").permitAll()
+                        .requestMatchers(HttpMethod.DELETE, "/cars/**").permitAll()
                         .anyRequest().authenticated())
                 .authenticationProvider(authenticationProvider()).addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class);
+                return http.build();
 
-                http.build();
     }
 
 

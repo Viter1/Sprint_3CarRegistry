@@ -9,6 +9,7 @@ import com.vitech.CarRegistry.services.CarService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -16,6 +17,7 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
 @RestController
+@RequestMapping("/cars")
 @Slf4j
 public class CarController {
 
@@ -25,7 +27,8 @@ public class CarController {
     @Autowired
     private CarMapper carMapper;
 
-    @GetMapping ("/car/{id}")
+    @GetMapping ("/{id}")
+    @PreAuthorize("hasAnyRole('CLIENT','VENDOR')")
     public ResponseEntity<?> getCarById(@PathVariable Integer id){
     log.info("Retriving Car Info - get car");
         try {
@@ -36,7 +39,8 @@ public class CarController {
 
     }
 
-    @GetMapping ("/cars")
+    @GetMapping ("/findAll")
+    @PreAuthorize("hasAnyRole('CLIENT','VENDOR')")
     public CompletableFuture<?> getCars(){
         log.info("Retriving Car Info - get car");
         log.info(":D");
@@ -58,7 +62,8 @@ public class CarController {
 
 
 
-    @DeleteMapping("/car/{id}")
+    @DeleteMapping("/{id}")
+    @PreAuthorize("hasRole('VENDOR')")
     public ResponseEntity<?> deleteCarById(@PathVariable Integer id){
         log.info("Retriving Car Info - delete");
         try {
@@ -70,7 +75,8 @@ public class CarController {
 
     }
 
-    @PostMapping("/car")
+    @PostMapping("/add")
+    @PreAuthorize("hasRole('VENDOR')")
     public ResponseEntity<?> addCar (@RequestBody CarRequest carRequest) {
         log.info("Retriving Car Info - add car");
         try {
@@ -82,7 +88,8 @@ public class CarController {
 
     }
 
-    @PutMapping("/car/{id}")
+    @PutMapping("/{id}")
+    @PreAuthorize("hasRole('VENDOR')")
     public ResponseEntity<?> updateCarById (@PathVariable Integer id , @RequestBody CarRequest carRequest) {
         log.info("Retriving Car Info - update car");
         try {
