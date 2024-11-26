@@ -33,10 +33,6 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login (@RequestBody LogInRequest request){
-
             return ResponseEntity.ok(authenticationService.login(request));
-
-
-
     }
 }

@@ -2,9 +2,12 @@ package com.vitech.CarRegistry.controller.dtos;
 
 
 import com.vitech.CarRegistry.domain.Brand;
-import lombok.Data;
+import lombok.*;
 
-@Data
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
 public class CarRequest {
 
     private Integer id;

@@ -16,8 +16,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
 
-@RestController
 @RequestMapping("/cars")
+@RestController
 @Slf4j
 public class CarController {
 
@@ -41,21 +41,19 @@ public class CarController {
 
     @GetMapping ("/findAll")
     @PreAuthorize("hasAnyRole('CLIENT','VENDOR')")
-    public CompletableFuture<?> getCars(){
+    public ResponseEntity<List<CarResponse>> getCars() {
         log.info("Retriving Car Info - get car");
         log.info(":D");
         try {
-            CompletableFuture<List<Car>> cars = carService.getAllCars();
+            List<Car> cars = carService.getAllCars();
             List< CarResponse> response = new ArrayList<>();
-
-            cars.get().forEach(car -> {
-
+            cars.forEach(car -> {
                 response.add(carMapper.toResponse(car));
-                log.info(":D");
             });
-            return CompletableFuture.completedFuture(response);
+            return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return  CompletableFuture.completedFuture(ResponseEntity.notFound());
+            log.error("Error while retrieving cars", e);
+            return ResponseEntity.notFound().build();
         }
 
     }

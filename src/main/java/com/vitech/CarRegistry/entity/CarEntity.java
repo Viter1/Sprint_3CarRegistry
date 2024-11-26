@@ -15,7 +15,7 @@ import org.springframework.boot.autoconfigure.domain.EntityScan;
 public class CarEntity {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue (strategy = GenerationType.IDENTITY)
     private int id;
 
     @ManyToOne

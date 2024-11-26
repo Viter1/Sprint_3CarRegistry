@@ -16,5 +16,5 @@ public interface CarService {
 
     Car saveCar(Car carRequest);
 
-    CompletableFuture<List<Car>> getAllCars();
+    List<Car> getAllCars();
 }

@@ -74,15 +74,14 @@ public class CarServiceImpl implements CarService {
 
 
     @Override
-    @Async
-    public CompletableFuture<List<Car>> getAllCars(){
+    //@Async
+    public List<Car> getAllCars(){
         List<CarEntity> carsList = carRepository.findAll();
         List<Car> cars = new ArrayList<>();
         carsList.forEach(car -> {
             cars.add(carConverter.toCar(car));
         } );
-
-        return  CompletableFuture.completedFuture(cars);
+        return  cars;
     }
 
 
