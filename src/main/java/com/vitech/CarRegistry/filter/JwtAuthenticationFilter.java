@@ -25,6 +25,7 @@ import java.io.IOException;
 @Slf4j
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
+    
     private final JwtService jwtService;
     private final UserServiceImpl userService;
 
@@ -36,7 +37,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         final String authHeader = request.getHeader("Authorization");
         final String jwt;
         final String userEmail;
-        if(StringUtils.isEmpty(authHeader)){
+        if(StringUtils.isEmpty(authHeader) || !authHeader.startsWith("Bearer ")){
             filterChain.doFilter(request,response);
             return;
         }
@@ -45,20 +46,20 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         userEmail = jwtService.extractUserName(jwt);
         if(!StringUtils.isEmpty(userEmail)&& SecurityContextHolder.getContext().getAuthentication() == null){
             UserDetails userDetails = userService.userDetailsService().loadUserByUsername(userEmail);
-            if (jwtService.isTokenValid(jwt, userDetails)) {
-                log.debug("Token valid for user: {}", userDetails);
-            } else {
-                log.warn("Invalid token for user: {}", userDetails);
-            }
+
             if(jwtService.isTokenValid(jwt,userDetails)){
                 log.debug("User - {} ",userDetails);
-                SecurityContext context = SecurityContextHolder.createEmptyContext();
-                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(userDetails,null,userDetails.getAuthorities());
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                        userDetails,null,userDetails.getAuthorities());
                 authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
+                SecurityContext context = SecurityContextHolder.createEmptyContext();
                 context.setAuthentication(authToken);
                 SecurityContextHolder.setContext(context);
+            }else {
+                log.warn("Invalid token for user: {}", userDetails);
             }
         }
+        filterChain.doFilter(request,response);
 
     }
 }

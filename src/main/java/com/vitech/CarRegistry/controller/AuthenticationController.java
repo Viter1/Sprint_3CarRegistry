@@ -33,6 +33,11 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<JwtResponse> login (@RequestBody LogInRequest request){
+        try{
             return ResponseEntity.ok(authenticationService.login(request));
+        }catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
     }
 }
