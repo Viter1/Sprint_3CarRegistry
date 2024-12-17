@@ -17,4 +17,5 @@ public interface CarService {
     Car saveCar(Car carRequest);
 
     List<Car> getAllCars();
+
 }

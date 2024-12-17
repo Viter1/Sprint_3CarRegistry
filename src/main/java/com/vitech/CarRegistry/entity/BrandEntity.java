@@ -19,7 +19,6 @@ public class BrandEntity {
     @Id
     @GeneratedValue (strategy = GenerationType.IDENTITY)
     private int id;
-
     private String name;
     private int warranty;
     private String country;

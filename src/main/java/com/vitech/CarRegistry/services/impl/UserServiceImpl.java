@@ -9,6 +9,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
+import java.util.Base64;
 
 
 @Service
@@ -30,5 +34,20 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserEntity save(UserEntity entity) {
         return userRepository.save(entity);
+    }
+
+    @Override
+    public byte[] getUserImage(Long id) {
+        UserEntity entity = userRepository.findById(id).orElseThrow(RuntimeException::new);
+        return Base64.getDecoder().decode(entity.getImage());
+    }
+
+    @Override
+    public void addUserImage(Long id, MultipartFile file) throws IOException {
+        UserEntity entity = userRepository.findById(id).orElseThrow(RuntimeException::new);
+        log.info("Saving user image ...");
+        entity.setImage(Base64.getEncoder().encodeToString(file.getBytes()));
+        userRepository.save(entity);
+
     }
 }

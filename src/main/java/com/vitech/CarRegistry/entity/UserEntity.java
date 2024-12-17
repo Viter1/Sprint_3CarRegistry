@@ -35,6 +35,11 @@ public class UserEntity implements UserDetails {
 
     String role;
 
+    @Lob
+    @Column(columnDefinition = "MEDIUMBLOB")
+    private String image;
+
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -70,4 +75,6 @@ public class UserEntity implements UserDetails {
     public boolean isEnabled() {
         return UserDetails.super.isEnabled();
     }
+
+
 }
