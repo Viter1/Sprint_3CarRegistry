@@ -8,9 +8,14 @@ import com.vitech.CarRegistry.domain.Car;
 import com.vitech.CarRegistry.services.CarService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -101,6 +106,32 @@ public class CarController {
 
     }
 
+    @GetMapping(value="/downloadCars")
+    @PreAuthorize("hasAnyRole('CLIENT','VENDOR')")
+    public ResponseEntity<?> downloadCars() {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment","car.csv");
+        byte[] csvBytes = carService.carsCsv().getBytes();
+
+        return new ResponseEntity<>(csvBytes,headers, HttpStatus.OK);
+    }
+
+    @PostMapping(value = "/uploadCsv" , consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    @PreAuthorize("hasRole('VENDOR')")
+    public ResponseEntity<String> uploadCsv(@RequestParam(value = "file")MultipartFile file){
+        if (file.isEmpty()){
+            log.error("The file it's empty");
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).build();
+        }
+
+        if (file.getOriginalFilename().contains(".csv")){
+            carService.uploadCars(file);
+            return ResponseEntity.ok("File sucessfully uploaded.");
+        }
+        log.error("The file it's not a CSV");
+        return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The file it's not a CSV");
+    }
 
 
 

@@ -2,6 +2,7 @@ package com.vitech.CarRegistry.services;
 
 import com.vitech.CarRegistry.controller.dtos.CarRequest;
 import com.vitech.CarRegistry.domain.Car;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;
 import java.util.concurrent.CompletableFuture;
@@ -17,5 +18,11 @@ public interface CarService {
     Car saveCar(Car carRequest);
 
     List<Car> getAllCars();
+
+    String carsCsv();
+
+    void uploadCars(MultipartFile file);
+
+
 
 }
